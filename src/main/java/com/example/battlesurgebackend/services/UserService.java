@@ -1,11 +1,9 @@
 package com.example.battlesurgebackend.services;
 
-import com.example.battlesurgebackend.model.Card;
+import com.example.battlesurgebackend.model.User;
 import com.example.battlesurgebackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UserService {
@@ -17,4 +15,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
 }

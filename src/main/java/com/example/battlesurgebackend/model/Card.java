@@ -16,6 +16,7 @@ public class Card {
     private int health;
     private int attack;
     private int mana;
+    private boolean alive = true;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
