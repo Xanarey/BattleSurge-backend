@@ -24,22 +24,14 @@ public class UserController {
 
     @GetMapping("/usersListFight")
     public List<User> getAllUsers(@RequestParam("currentEmail") String currentEmail) {
-        // Выводим переданное имя для отладки
-        System.out.println("Current User Name from frontend: " + currentEmail);
-
         List<User> list = userService.getAllUsers();
-
-        // Выводим всех пользователей для отладки
         list.forEach(user -> System.out.println("User in DB: " + user.getAccount().getEmail()));
 
-        // Фильтруем текущего пользователя
         List<User> filteredList = list.stream()
                 .filter(user -> !user.getAccount().getEmail().trim().equalsIgnoreCase(currentEmail.trim()))
                 .collect(Collectors.toList());
 
-        // Выводим результат фильтрации
         filteredList.forEach(user -> System.out.println("User after filtering: " + user.getAccount().getEmail()));
-
         return filteredList;
     }
 

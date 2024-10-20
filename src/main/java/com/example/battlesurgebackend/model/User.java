@@ -1,6 +1,7 @@
 package com.example.battlesurgebackend.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class User {
     @JsonManagedReference
     private Account account;
 
+    @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Card> cards = new ArrayList<>();
