@@ -21,4 +21,8 @@ public class AccountService {
         return accountRepository.findByEmail(email)
                 .filter(user -> user.getPassword().equals(password));
     }
+
+    public Account findAccountByEmail(String email) {
+        return accountRepository.findByEmail(email).orElse(null);
+    }
 }

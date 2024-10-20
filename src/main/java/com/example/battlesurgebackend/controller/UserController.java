@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,28 +23,25 @@ public class UserController {
     }
 
     @GetMapping("/usersListFight")
-    public List<User> getAllUsers(@RequestParam("currentUserName") String currentUserName) {
+    public List<User> getAllUsers(@RequestParam("currentEmail") String currentEmail) {
         // Выводим переданное имя для отладки
-        System.out.println("Current User Name from frontend: " + currentUserName);
+        System.out.println("Current User Name from frontend: " + currentEmail);
 
         List<User> list = userService.getAllUsers();
 
         // Выводим всех пользователей для отладки
-        list.forEach(user -> System.out.println("User in DB: " + user.getUsername()));
+        list.forEach(user -> System.out.println("User in DB: " + user.getAccount().getEmail()));
 
         // Фильтруем текущего пользователя
         List<User> filteredList = list.stream()
-                .filter(user -> !user.getUsername().trim().equalsIgnoreCase(currentUserName.trim()))
+                .filter(user -> !user.getAccount().getEmail().trim().equalsIgnoreCase(currentEmail.trim()))
                 .collect(Collectors.toList());
 
         // Выводим результат фильтрации
-        filteredList.forEach(user -> System.out.println("User after filtering: " + user.getUsername()));
+        filteredList.forEach(user -> System.out.println("User after filtering: " + user.getAccount().getEmail()));
 
         return filteredList;
     }
-
-
-
 
 
 }

@@ -17,8 +17,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String username;
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean onlineStatus = false;
 
     @OneToOne
     @JoinColumn(name = "id", referencedColumnName = "id")
