@@ -1,7 +1,9 @@
 package com.example.battlesurgebackend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 @Entity
 @Table(name = "accounts")
@@ -17,7 +19,7 @@ public class Account {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String username;
-
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private User user;
 }

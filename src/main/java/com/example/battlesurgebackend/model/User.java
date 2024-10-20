@@ -1,8 +1,10 @@
 package com.example.battlesurgebackend.model;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,12 @@ public class User {
 
     private String username;
 
+    @OneToOne
+    @JoinColumn(name = "id", referencedColumnName = "id")
+    @JsonManagedReference
+    private Account account;
+
+    @ToString.Exclude
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Card> cards = new ArrayList<>();
 

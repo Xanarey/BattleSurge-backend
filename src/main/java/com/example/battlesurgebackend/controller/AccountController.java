@@ -27,11 +27,12 @@ public class AccountController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody AccountRequest loginRequest) {
         Optional<Account> account = accountService.login(loginRequest.getEmail(), loginRequest.getPassword());
-        return account.map(value -> ResponseEntity.ok(value.getUsername())).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password"));
+        return account.map(value -> ResponseEntity.ok(value.getEmail())).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password"));
     }
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout() {
         return ResponseEntity.ok("Logged out successfully");
     }
+
 }
