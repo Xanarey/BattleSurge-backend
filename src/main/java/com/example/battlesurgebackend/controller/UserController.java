@@ -86,24 +86,35 @@ public class UserController {
     public ResponseEntity<String> acceptInvite(@RequestBody InviteRequest inviteRequest) {
         Long inviterId = inviteRequest.getInviterId();
         Long inviteeId = inviteRequest.getInviteeId();
-
         String battleId = UUID.randomUUID().toString();
 
-        Map<String, Object> battleStartMessage = new HashMap<>();
-        battleStartMessage.put("battleId", battleId);
-        battleStartMessage.put("opponentId", inviteeId);
-        battleStartMessage.put("opponentName", userService.getUserById(inviteeId).getUsername());
+        // Получаем имена игроков
+        String inviterName = userService.getUserById(inviterId).getUsername();
+        String inviteeName = userService.getUserById(inviteeId).getUsername();
+
+        // Сообщение для приглашающего
+        Map<String, Object> battleStartMessageForInviter = new HashMap<>();
+        battleStartMessageForInviter.put("battleId", battleId);
+        battleStartMessageForInviter.put("opponentId", inviteeId);
+        battleStartMessageForInviter.put("opponentName", inviteeName);
+
+        // Сообщение для приглашённого
+        Map<String, Object> battleStartMessageForInvitee = new HashMap<>();
+        battleStartMessageForInvitee.put("battleId", battleId);
+        battleStartMessageForInvitee.put("opponentId", inviterId);
+        battleStartMessageForInvitee.put("opponentName", inviterName);
+
+        // Отправляем сообщения обоим игрокам с нужной информацией
+        messagingTemplate.convertAndSendToUser(
+                inviterId.toString(), "/queue/startBattle", battleStartMessageForInviter);
 
         messagingTemplate.convertAndSendToUser(
-                inviterId.toString(), "/queue/startBattle", battleStartMessage);
-
-        messagingTemplate.convertAndSendToUser(
-                inviteeId.toString(), "/queue/startBattle", battleStartMessage);
-
-        // инфа о битве в базе данных
+                inviteeId.toString(), "/queue/startBattle", battleStartMessageForInvitee);
 
         return ResponseEntity.ok("Battle started");
     }
+
+
 
     @PostMapping("/declineInvite")
     public ResponseEntity<Void> declineInvite(@RequestBody DeclineInviteRequest request) {
