@@ -4,7 +4,6 @@ import com.example.battlesurgebackend.model.Account;
 import com.example.battlesurgebackend.model.User;
 import com.example.battlesurgebackend.services.AccountService;
 import com.example.battlesurgebackend.services.UserService;
-import org.hibernate.Hibernate;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -47,7 +46,7 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        String userEmail = (String) headerAccessor.getSessionAttributes().get("email");
+        String userEmail = (String) Objects.requireNonNull(headerAccessor.getSessionAttributes()).get("email");
 
         if (userEmail != null) {
             System.out.println("User disconnected: " + userEmail);
