@@ -1,6 +1,5 @@
 package com.example.battlesurgebackend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,6 +19,5 @@ public class Card {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private User owner;
 }

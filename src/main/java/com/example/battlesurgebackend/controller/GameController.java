@@ -1,29 +1,45 @@
 package com.example.battlesurgebackend.controller;
 
-import com.example.battlesurgebackend.model.Card;
-import com.example.battlesurgebackend.services.CardService;
+import com.example.battlesurgebackend.dto.AttackRequest;
+import com.example.battlesurgebackend.dto.GameStateDTO;
+import com.example.battlesurgebackend.services.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/game")
+@RequestMapping("/games")
 public class GameController {
 
-    private final CardService cardService;
+    private final GameService gameService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
-    public GameController(CardService cardService) {
-        this.cardService = cardService;
+    public GameController(GameService gameService, SimpMessagingTemplate simpMessagingTemplate) {
+        this.gameService = gameService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
-    @GetMapping("/cards/{userId}")
-    public ResponseEntity<List<Card>> getUserCards(@PathVariable Long userId) {
-        List<Card> cards = cardService.getAllUserCards(userId);
-        return ResponseEntity.ok(cards);
+    @GetMapping("/{battleId}")
+    public ResponseEntity<GameStateDTO> getGameState(@PathVariable UUID battleId) {
+        GameStateDTO gameState = gameService.getGameState(battleId);
+        System.out.println("Returning GameStateDTO: " + gameState);
+        return ResponseEntity.ok(gameState);
     }
 
 
+    @PostMapping("/{battleId}/attack")
+    public GameStateDTO processAttack(@PathVariable UUID battleId, @RequestBody AttackRequest attackRequest) {
+        Long attackerCardId = attackRequest.getAttackerCardId();
+        Long defenderCardId = attackRequest.getDefenderCardId();
+
+        GameStateDTO gameStateDTO = gameService.processAttack(battleId, attackerCardId, defenderCardId);
+
+        simpMessagingTemplate.convertAndSend("/topic/game-progress/" + battleId, gameStateDTO);
+
+        return gameStateDTO;
+    }
 }

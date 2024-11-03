@@ -29,8 +29,6 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-
-        // Логируем все заголовки, чтобы убедиться, что email передается
         System.out.println("Headers received: " + headerAccessor.toNativeHeaderMap());
 
         String userEmail = headerAccessor.getFirstNativeHeader("email");
@@ -54,10 +52,10 @@ public class WebSocketEventListener {
 
             if (account != null) {
                 User user = account.getUser();
-                user.setOnlineStatus(false);  // Устанавливаем статус оффлайн
-                userService.updateUser(user);  // Обновляем статус пользователя в базе данных
+                user.setOnlineStatus(false);
+                userService.updateUser(user);
 
-                messagingTemplate.convertAndSend("/topic/userStatus", user);  // Отправляем обновленное состояние через WebSocket
+                messagingTemplate.convertAndSend("/topic/userStatus", user);
             }
         } else {
             System.out.println("No email found in session attributes during disconnect.");

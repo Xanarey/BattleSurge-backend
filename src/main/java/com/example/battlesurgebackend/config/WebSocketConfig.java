@@ -16,7 +16,6 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 import org.springframework.messaging.support.MessageHeaderAccessor;
 
 import java.util.Collections;
-import java.util.Objects;
 
 @Configuration
 @EnableWebSocketMessageBroker

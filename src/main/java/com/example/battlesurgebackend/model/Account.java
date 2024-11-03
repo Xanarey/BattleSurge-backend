@@ -1,6 +1,6 @@
 package com.example.battlesurgebackend.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -9,17 +9,16 @@ import lombok.ToString;
 @Table(name = "accounts")
 @Data
 public class Account {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
     private String email;
-
-    @Column(nullable = false)
     private String password;
 
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @ToString.Exclude
+    @OneToOne(mappedBy = "account")
+    @JsonIgnore
     private User user;
 }
